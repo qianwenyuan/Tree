@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-antlr4 MiniJava.g4
+export CLASSPATH=".;./antlr-4.5-complete.jar:$CLASSPATH"
+java -jar ./antlr-4.5-complete.jar MiniJava.g4
 javac MiniJava*.java
-grun MiniJava goal factorial.java -gui
+java org.antlr.v4.runtime.misc.TestRig MiniJava goal factorial.java -gui
 
-#! 有点问题，跑不起来，但可以将上述3行逐行输入终端，可以运行
+
+#! 可以运行了
