@@ -2,6 +2,7 @@ import com.sun.istack.internal.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -12,26 +13,43 @@ public class Listener extends MiniJavaBaseListener {
 
     /*
     @Override
-    public void enterProg(@NotNull MiniJavaParser.ProgContext ctx) {
+    public void enterProg(@NotNull MiniJavaParser.GoalContext ctx) {
         System.out.println(" ");
     }
 
     @Override
-    public void exitProg(@NotNull MiniJavaParser.ProgContext ctx) {
+    public void exitProg(@NotNull MiniJavaParser.GoalContext ctx) {
         System.out.println("exitProg: ");
     }
 
     @Override
-    public void exitExpr(@NotNull MiniJavaParser.ProgContext ctx) {
+    public void exitExpr(@NotNull MiniJavaParser.GoalContext ctx) {
         System.out.println("exitExpr: ");
     }
     */
+
     @Override
     public void visitTerminal(TerminalNode node) {
-        if (node.getText().equals("*")) {
-            System.out.println(".." + node.getChild(1).getText());
+        if (MiniJavaParser.VarDeclarationContext.class.isInstance(node.getText())||
+                MiniJavaParser.FieldDeclarationContext.class.isInstance(node.getClass())) {
+            Tree.local_var.add(node.getText());
         }
+        Tree.local_var.add(node.getText());
+        Check(node, Tree.local_var);
+    }
 
-        System.out.println("Terminal: "+node.getText());
+    public void Check(TerminalNode node, List<String>vars) {
+        List<String>mvars = vars;
+        mvars.add("*");
+        mvars.add("+");
+        mvars.add("-");
+        mvars.add("<");
+        mvars.add("&&");
+        mvars.add(";");
+        mvars.add("=");
+
+        if (!mvars.contains(node.getText())) {
+            System.out.println("Error: "+node.getSymbol().getLine()+":"+node.getSymbol().getTokenIndex()+ "  "+node.getSymbol().getText()+" not defined.");
+        }
     }
 }
